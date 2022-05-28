@@ -3,13 +3,26 @@ package main
 import (
 	"fmt"
 
+	"github.com/nenodias/banco-golang/clientes"
 	c "github.com/nenodias/banco-golang/contas"
 )
 
+func PagarBoleto(conta Conta, valor float64) {
+	conta.Sacar(valor)
+}
+
+type Conta interface {
+	Sacar(valor float64) (err error)
+}
+
 func main() {
-	titular := c.ContaCorrente{Titular: "Guilherme", NumeroAgencia: 589, NumeroConta: 123456, Saldo: 125.5}
+	cliente := clientes.Titular{Nome: "Guilherme"}
+	titular := c.ContaCorrente{Titular: cliente, NumeroAgencia: 589, NumeroConta: 123456}
+	titular.Depositar(125.50)
 	fmt.Println(titular)
-	titular2 := c.ContaCorrente{"Bruna", 222, 111222, 200}
+	cliente2 := clientes.Titular{Nome: "Bruna"}
+	titular2 := c.ContaPoupanca{Titular: cliente2, NumeroAgencia: 222, NumeroConta: 111222}
+	titular2.Depositar(325.99)
 	fmt.Println(titular2)
 	err := titular2.Sacar(50)
 	if err != nil {
@@ -28,6 +41,12 @@ func main() {
 		fmt.Println(err.Error())
 	}
 	fmt.Println(titular, titular2)
+
+	PagarBoleto(&titular, 25.50)
+	fmt.Println(titular.GetSaldo())
+
+	PagarBoleto(&titular2, 25.99)
+	fmt.Println(titular2.GetSaldo())
 
 	/*	Exemplo de código utilizando ponteiros
 

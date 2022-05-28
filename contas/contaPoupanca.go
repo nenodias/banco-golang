@@ -7,14 +7,13 @@ import (
 	"github.com/nenodias/banco-golang/clientes"
 )
 
-type ContaCorrente struct {
-	Titular       clientes.Titular
-	NumeroAgencia int
-	NumeroConta   int
-	saldo         float64
+type ContaPoupanca struct {
+	Titular                              clientes.Titular
+	NumeroAgencia, NumeroConta, Operacao int
+	saldo                                float64
 }
 
-func (c *ContaCorrente) Sacar(valor float64) (err error) {
+func (c *ContaPoupanca) Sacar(valor float64) (err error) {
 	if valor <= c.saldo && valor > 0 {
 		c.saldo -= valor
 		return nil
@@ -23,7 +22,7 @@ func (c *ContaCorrente) Sacar(valor float64) (err error) {
 	return errors.New(msg)
 }
 
-func (c *ContaCorrente) Depositar(valor float64) (err error) {
+func (c *ContaPoupanca) Depositar(valor float64) (err error) {
 	if valor > 0 {
 		c.saldo += valor
 		return nil
@@ -32,7 +31,7 @@ func (c *ContaCorrente) Depositar(valor float64) (err error) {
 	return errors.New(msg)
 }
 
-func (c *ContaCorrente) Transferir(valor float64, contaDestino *ContaCorrente) (err error) {
+func (c *ContaPoupanca) Transferir(valor float64, contaDestino *ContaCorrente) (err error) {
 	if valor <= c.saldo && valor > 0 {
 		c.saldo -= valor
 		err := contaDestino.Depositar(valor)
@@ -46,6 +45,6 @@ func (c *ContaCorrente) Transferir(valor float64, contaDestino *ContaCorrente) (
 	return errors.New(msg)
 }
 
-func (c *ContaCorrente) GetSaldo() float64 {
+func (c *ContaPoupanca) GetSaldo() float64 {
 	return c.saldo
 }
